@@ -27,8 +27,8 @@
 	</head>
 
 	<!-- Initiate app and controller on body -->
-	<body >
-
+	<body ng-app="myApp" ng-controller="myCtrl">
+		
 		<!-- Header with logout button -->
 		<header>
 			<span class="fa fa-twitter fa-2x"></span>
@@ -42,15 +42,15 @@
 		<div class="container">
 			
 			<!-- Sign-in/sign-up form: show if userId isn't defined -->
-			<form name="myForm" novalidate>
+			<form ng-show="!userId" name="myForm" novalidate>
 			
 				<!-- Bind model "handle" to this input, set minimum length, and make it required -->
 				<div class="form-group">
 					<label>Handle:</label>
-					<input name="handle" class="form-control">	
+					<input name="handle" class="form-control" ng-model="handle" ng-minlength="6" required>	
 					
 					<!-- Add an error message if the length is too short -->	
-					
+					<p ng-show="myForm.handle.$error.minlength">too short</p>
 				</div>	
 
 				<!-- Input for image URL -->
@@ -63,9 +63,10 @@
 				<!-- Bind model "email" to this input and make it required -->
 				<div class="form-group">
 					<label>Email:</label>
-					<input  name="email" type="email" class="form-control"></input>
+					<input name="email" type="email" class="form-control" ng-model="email" required></input>
 
 					<!-- Show an error message if the email is not valid -->	
+					<p ng-show="myForm.email.$error.email">not email</p>
 				</div>
 
 				<!-- Password -->
@@ -111,31 +112,31 @@
 				</div>
 				
 				<!-- Show everyone's tweets! -->
-				<div>
+				<div >
 
 					<!-- Use ng-repeat directive to repeat a div for each element in tweets -->
-					<div class="tweet-box">
+					<div class="tweet-box" ng-repeat="tweet in tweets | orderBy:'-time'">
 						<div>
 							<!-- Put an img tag that shows the userImage of that tweet -->
 							<img class="image" ng-src="{{users[tweet.userId].userImage}}"></img>
 							
 							<!-- Put in the twitter handle and time of tweet -->
-							<span class="handle"></span>
-							<span class="time"></span>
+							<span class="handle">{{users[tweet.userId].handle}}</span>
+							<span class="time">{{tweet.time | date}}</span>
 						</div>
 
 						<!-- Put in the text of the tweet -->
 						<div class="tweet">
-							
+							{{tweet.text}}
 						</div>
 
 						<!-- Create a section for showing tweet likes -->
 						<div class="likes">
 							<!-- Show a heart icon that, when clicked, 
 								passes your tweet to your "like" function -->
-							<i></i>
+							<i ng-click="like(tweet)" class="fa fa-heart"></i>
 							<!-- Show your total number of likes -->
-							<span></span>
+							<span>{{tweet.likes}}</span>
 						</div>
 					</div>
 				</div>
